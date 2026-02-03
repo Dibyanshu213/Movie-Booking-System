@@ -1,0 +1,117 @@
+﻿import { Routes, Route, useLocation, Link } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import { BookingProvider } from "./context/BookingContext.jsx";
+import { ThemeProvider } from "./context/ThemeControl.jsx";
+
+import Navbar from "./pages/Navbar.jsx";
+import Footer from "./pages/Footer.jsx";
+import Home from "./pages/Home.jsx";
+import Movies from "./pages/Movies.jsx";
+import MovieDetails from "./pages/MovieDetails.jsx";
+import Confirmation from "./pages/Confirmation.jsx";
+import MyBookings from "./pages/MyBookings.jsx";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Registers.jsx";
+import Admin from "./pages/Admin.jsx";
+import MovieDashboard from "./pages/MovieDashboard.jsx";
+import Users from "./pages/Users.jsx";
+
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import AdminRoute from "./components/AdminRoute.jsx";
+
+// ✅ Choice screen like Blog Reader
+function ChoicePage() {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(135deg, #edeef0, #1b58d2)",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "7rem",
+          borderRadius: "12px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ color: "#010101", marginBottom: "1.5rem", fontSize: "2rem" }}>
+          Welcome to Movie Booking 🎬
+        </h2>
+        <p style={{ marginBottom: "1rem" }}>Choose an option to continue:</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <Link
+            to="/register"
+            style={{
+              backgroundColor: "#24958f",
+              color: "white",
+              padding: "0.8rem",
+              borderRadius: "89px",
+              textDecoration: "none",
+              fontWeight: "bold",
+            }}
+          >
+            Register
+          </Link>
+          <Link
+            to="/login"
+            style={{
+              backgroundColor: "#2699a5",
+              color: "white",
+              padding: "0.8rem",
+              borderRadius: "89px",
+              textDecoration: "none",
+              fontWeight: "bold",
+            }}
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const location = useLocation();
+  // ✅ Hide Navbar/Footer on choice/login/register pages
+  const hideNavbar = ["/", "/login", "/register"].includes(location.pathname);
+
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <BookingProvider>
+          {!hideNavbar && <Navbar />}
+          <div className="min-h-screen">
+            <Routes>
+              {/* ✅ Choice screen at root */}
+              <Route path="/" element={<ChoicePage />} />
+
+              {/* Public routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+
+              {/* Protected routes */}
+              <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+              <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
+              <Route path="/movies/:id" element={<ProtectedRoute><MovieDetails /></ProtectedRoute>} />
+              <Route path="/confirmation" element={<ProtectedRoute><Confirmation /></ProtectedRoute>} />
+              <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
+
+              {/* Admin routes */}
+              <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+              <Route path="/admin/dashboard" element={<AdminRoute><MovieDashboard /></AdminRoute>} />
+              <Route path="/admin/users" element={<AdminRoute><Users /></AdminRoute>} />
+            </Routes>
+          </div>
+          {!hideNavbar && <Footer />}
+        </BookingProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}
