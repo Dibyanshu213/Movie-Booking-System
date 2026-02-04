@@ -15,7 +15,7 @@ export default function MovieDetails() {
     const fetchMovie = async () => {
       try {
         const res = await axios.get(
-          `https://api.themoviedb.org/3/movie/${id}?api_key=YOUR_TMDB_API_KEY`
+          `https://api.themoviedb.org/3/discover/movie?api_key=80d491707d8cf7b38aa19c7ccab0952f`
         );
         setMovie(res.data);
         setSelectedMovie(res.data);

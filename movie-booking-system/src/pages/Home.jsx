@@ -1,76 +1,96 @@
-﻿import { useState } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-  // Example posters (replace with real API images later)
-  const movies = [
-    { id: 1, title: "Movie 1", poster: "https://via.placeholder.com/300x400?text=Movie+1" },
-    { id: 2, title: "Movie 2", poster: "https://via.placeholder.com/300x400?text=Movie+2" },
-    { id: 3, title: "Movie 3", poster: "https://via.placeholder.com/300x400?text=Movie+3" },
-    { id: 4, title: "Movie 4", poster: "https://via.placeholder.com/300x400?text=Movie+4" },
-  ];
+  const [movies, setMovies] = useState([]);
 
-  const [index, setIndex] = useState(0);
+  // ✅ Fetch movies from TMDB API
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await fetch(
+          "https://api.themoviedb.org/3/discover/movie?api_key=80d491707d8cf7b38aa19c7ccab0952f"
+        );
+        const data = await response.json();
+        const formatted = data.results.map((movie) => ({
+          id: movie.id,
+          title: movie.title,
+          poster: movie.poster_path
+            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+            : "https://via.placeholder.com/300x400?text=No+Image",
+          release: movie.release_date,
+          rating: movie.adult ? "Adult" : "U", // simple demo rating
+          status: "Advance", // demo booking status
+        }));
+        setMovies(formatted);
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+      }
+    };
 
-  const nextMovie = () => {
-    setIndex((prev) => (prev + 1) % movies.length);
-  };
-
-  const prevMovie = () => {
-    setIndex((prev) => (prev - 1 + movies.length) % movies.length);
-  };
+    fetchMovies();
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-r from-purple-600 to-orange-500 text-white text-center p-8">
-      <h1 className="text-4xl font-bold mb-4">Welcome to Movie Booking</h1>
-      <p className="text-lg mb-6">Browse movies, select seats, and book your tickets easily!</p>
-
-      <div className="flex gap-4 mb-8">
-        <Link
-          to="/movies"
-          className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500"
-        >
-          Book Now
-        </Link>
-        <Link
-          to="/locations"
-          className="bg-green-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-green-500"
-        >
-          See Locations
-        </Link>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* ✅ Promo Banner */}
+      <div className="bg-gradient-to-r from-purple-700 to-orange-500 text-white py-6 px-4 text-center">
+        <h2 className="text-2xl font-bold mb-2">
+          🎉 Get 10% Cashback up to Rs.200!
+        </h2>
+        <p className="mb-2">Use promo code <span className="font-bold">QFXDEALS</span> on your first ticket purchase.</p>
+        <p className="text-sm">Buy from Khalti App and enjoy exclusive offers.</p>
       </div>
 
-      {/* ✅ Big Poster Slider */}
-      <h2 className="text-2xl font-semibold mb-4">Popular Movies</h2>
-      <div className="flex items-center gap-6">
-        {/* Left Arrow */}
-        <button
-          onClick={prevMovie}
-          className="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 text-2xl"
-        >
-          ◀
-        </button>
+      {/* ✅ Now Showing Section */}
+      <div className="px-6 py-10">
+        <h2 className="text-3xl font-semibold mb-6">Now Showing | Coming Soon</h2>
 
-        {/* Poster */}
-        <div className="bg-white rounded shadow-lg p-4">
-          <img
-            src={movies[index].poster}
-            alt={movies[index].title}
-            className="w-72 h-96 object-cover rounded"
-          />
-          <h3 className="text-black font-semibold mt-2">{movies[index].title}</h3>
-        </div>
-
-        {/* Right Arrow */}
-        <button
-          onClick={nextMovie}
-          className="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 text-2xl"
-        >
-          ▶
-        </button>
+        {movies.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {movies.slice(0, 8).map((movie) => (
+              <div
+                key={movie.id}
+                className="bg-white rounded-lg shadow hover:shadow-lg transition p-3"
+              >
+                <img
+                  src={movie.poster}
+                  alt={movie.title}
+                  className="w-full h-72 object-cover rounded"
+                />
+                <div className="mt-3">
+                  <h3 className="text-lg font-bold">{movie.title}</h3>
+                  <p className="text-sm text-gray-600">
+                    Release: {movie.release}
+                  </p>
+                  {/* Labels */}
+                  <div className="flex gap-2 mt-2">
+                    <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded">
+                      {movie.status}
+                    </span>
+                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
+                      {movie.rating}
+                    </span>
+                  </div>
+                  <Link
+                    to={`/movies/${movie.id}`}
+                    className="block mt-3 bg-yellow-400 text-black py-2 rounded font-semibold hover:bg-yellow-500 text-center"
+                  >
+                    Book Now
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>Loading movies...</p>
+        )}
       </div>
 
-      <footer className="mt-12 text-sm text-gray-200">© 2026 Movie Booking</footer>
+      {/* ✅ Footer */}
+      <footer className="bg-gray-900 text-gray-400 text-center py-6">
+        © 2026 Movie Booking
+      </footer>
     </div>
   );
 }
