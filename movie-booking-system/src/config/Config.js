@@ -1,9 +1,9 @@
 // Centralized configuration file for Movie Booking project
 
 const Config = {
-  // TMDb API (replace with your real key)
-  TMDB_API_KEY: "YOUR_TMDB_API_KEY",
-  TMDB_BASE_URL: "https://api.themoviedb.org/3",
+  // External TMDb API removed — using Firebase as data source
+  TMDB_API_KEY: "",
+  TMDB_BASE_URL: "",
 
   // Firebase project info (already in Firebase.js, but you can reference here if needed)
   FIREBASE_PROJECT_ID: "movie-booking-system-7260b",

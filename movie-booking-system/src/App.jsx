@@ -11,13 +11,14 @@ import MovieDetails from "./pages/MovieDetails.jsx";
 import Confirmation from "./pages/Confirmation.jsx";
 import MyBookings from "./pages/MyBookings.jsx";
 import Login from "./pages/Login.jsx";
-import Register from "./pages/Registers.jsx";
+import Register from "./pages/Register.jsx";   // ✅ fixed import
 import Admin from "./pages/Admin.jsx";
 import MovieDashboard from "./pages/MovieDashboard.jsx";
 import Users from "./pages/Users.jsx";
 
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AdminRoute from "./components/AdminRoute.jsx";
+// import { seedFirestore } from "./seed/seedData.js"; // ✅ remove if unused
 
 // ✅ Choice screen like Blog Reader
 function ChoicePage() {
@@ -79,6 +80,7 @@ function ChoicePage() {
 
 export default function App() {
   const location = useLocation();
+
   // ✅ Hide Navbar/Footer on choice/login/register pages
   const hideNavbar = ["/", "/login", "/register"].includes(location.pathname);
 

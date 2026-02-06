@@ -1,7 +1,7 @@
 ﻿import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { signOut } from "firebase/auth";
-import { auth } from "../config/Firebase";
+import { auth } from "../config/firebase";
 
 export default function Navbar() {
   const { user } = useAuthContext();
